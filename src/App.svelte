@@ -1,35 +1,31 @@
 <script lang="ts">
   import { weekNumber } from "weeknumber";
+  import type { Users } from "./types/user.type";
+  import Duties from "./components/Duties.svelte";
+
   const currentWeekNr = weekNumber(new Date());
-
-  interface User {
-    username: string;
-    name: string;
-    dutiesWeek: "even" | "odd";
-  }
-
-  interface Users extends Array<User> {}
-
+  const oddWeek = currentWeekNr % 2 == 1;
   export let name: string;
+
+
+	function handleMessage(event) {
+		alert(event.detail.text);
+	}
 
   let users: Users = [
     {
-      username: "petter123",
       name: "petter",
       dutiesWeek: "odd",
     },
     {
-      username: "lisa123",
       name: "lisa",
       dutiesWeek: "even",
     },
     {
-      username: "petter123",
       name: "anders",
       dutiesWeek: "odd",
     },
     {
-      username: "lisa123",
       name: "rotmo",
       dutiesWeek: "even",
     },
@@ -39,26 +35,23 @@
 <main>
   <header>
     <h1>Vaskeliste @ Elvevegen</h1>
-    <h2>Week number: {currentWeekNr}</h2>
+    <h2>Ukenummer: {currentWeekNr}</h2>
   </header>
 
   <p>
     This means that
     {#each users as user}
-      {#if user.dutiesWeek === "odd"}
+      {#if user.dutiesWeek === "odd" && oddWeek}
+        {`${user.name} `}
+      {:else if user.dutiesWeek === "even" && !oddWeek}
         {`${user.name} `}
       {/if}
     {/each}
     is cleaning
   </p>
 
-  <h3>Duties:</h3>
-  <form>
-    <label> <input type="checkbox" />Vaske badet</label>
-    <label> <input type="checkbox" />Vaske kjøkkenet</label>
-    <label> <input type="checkbox" />Vaske stua</label>
-    <label> <input type="checkbox" />Vaske gangen</label>
-  </form>
+  <Duties on:message={handleMessage}/>
+
   <!-- TODO Add sub tasks and defention of done -->
   <!-- TODO Firestore login -->
   <!-- TODO add notification for all tasks completed -->
